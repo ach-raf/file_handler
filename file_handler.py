@@ -4,7 +4,7 @@ import requests
 from datetime import date
 from datetime import datetime as dt
 from pickle import load as load_pickle_file
-
+import urllib.request
 """
 python library to facilitate the manipulation of writing to the disk.
 """
@@ -120,3 +120,6 @@ class FileManipulation:
         img_name = image_url.split('/')[-1]
         with open(f'{self.base_path}/{img_name}', 'wb') as handler:
             handler.write(img_data)
+
+    def download_pdf(self, pdf_name, pdf_url):
+        urllib.request.urlretrieve(pdf_url, f'{self.base_path}/{pdf_name}.pdf')
