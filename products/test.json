@@ -1,0 +1,26 @@
+[
+    {
+        "name": "xxx",
+        "description": "_product_description",
+        "category": "_product_category",
+        "ranges": "_product_ranges",
+        "image_name": "{_media_name}.jpg",
+        "pdf_name": "{_media_name}.pdf"
+    },
+    {
+        "name": "xx",
+        "description": "_product_description",
+        "category": "_product_category",
+        "ranges": "_product_ranges",
+        "image_name": "{_media_name}.jpg",
+        "pdf_name": "{_media_name}.pdf"
+    },
+    {
+        "name": "x",
+        "description": "_product_description",
+        "category": "_product_category",
+        "ranges": "_product_ranges",
+        "image_name": "{_media_name}.jpg",
+        "pdf_name": "{_media_name}.pdf"
+    }
+]
