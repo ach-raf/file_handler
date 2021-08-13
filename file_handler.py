@@ -44,6 +44,10 @@ def read_txt(file_to_read, separator):
     return file_to_read.read().split(separator)
 
 
+def read_html(file_to_read):
+    return file_to_read.read()
+
+
 def write_txt(file_to_write, content):
     print('txt')
     file_to_write.write(str(content))
@@ -106,6 +110,8 @@ class FileManipulation:
                     data = read_json(file_to_read)
                 elif 'txt' in file_type:
                     data = read_txt(file_to_read, separator)
+                elif 'html' in file_type:
+                    data = read_html(file_to_read)
                 elif 'pkl' in file_type:
                     data = read_pickle(file_to_read)
             return data
@@ -113,13 +119,11 @@ class FileManipulation:
             print('No data to read')
             return False
 
-    def download_image(self, image_url):
-        if not os.path.exists(self.base_path):
-            os.makedirs(self.base_path)
-        img_data = requests.get(image_url).content
-        img_name = image_url.split('/')[-1]
-        with open(f'{self.base_path}/{img_name}', 'wb') as handler:
-            handler.write(img_data)
+    def download_image(self, image_name, image_url):
+        image_data = requests.get(image_url).content
+        image_extension = image_url.split('.')[-1]
+        with open(f'{self.base_path}/{image_name}.{image_extension}', 'wb') as handler:
+            handler.write(image_data)
 
     def download_pdf(self, pdf_name, pdf_url):
         urllib.request.urlretrieve(pdf_url, f'{self.base_path}/{pdf_name}.pdf')
