@@ -40,6 +40,27 @@ def write_json(path, file_to_write, content):
         json.dump(data, file_to_write, indent=4, default=json_serial)
 
 
+def write_json1(path, file_to_write, root_array_key, content):
+    data = {}
+    if not file_is_empty(path):
+        data = read_json(file_to_write)
+        if root_array_key in data:
+            if isinstance(content, dict):
+                data[root_array_key].append(content)
+        else:
+            if isinstance(content, list):
+                data[root_array_key] = content
+            else:
+                data[root_array_key] = [content]
+    else:
+        if isinstance(content, list):
+            data[root_array_key] = content
+        else:
+            data[root_array_key] = [content]
+    with open(path, 'w', encoding='utf8') as file_to_write:
+        json.dump(data, file_to_write, indent=4, default=json_serial)
+        
+        
 def read_txt(file_to_read, separator):
     return file_to_read.read().split(separator)
 
