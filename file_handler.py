@@ -86,8 +86,8 @@ def write_pickle(file_to_write):
     print('t')
 
 
-def _dataframe_to_csv(path, file_name, dataFrame):
-    dataFrame.to_csv(f'{path}/{file_name}')
+def _dataframe_to_csv(path, dataFrame):
+    dataFrame.to_csv(path)
 
 
 class FileManipulation:
