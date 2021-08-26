@@ -52,8 +52,8 @@ def write_json(path, file_to_write, content, root_array_key):
     else:
         data = read_json(file_to_write)
         data.append(content)
-    with open(path, 'w', encoding='utf8') as file_to_write:
-        json.dump(data, file_to_write, indent=4, default=json_serial)
+    # with open(path, 'w', encoding='utf8') as file_to_write:
+    json.dump(data, file_to_write, indent=4, default=json_serial)
 
 
 def write_json1(path, file_to_write, content, root_array_key):
@@ -86,8 +86,8 @@ def write_pickle(file_to_write):
     print('t')
 
 
-def dataframe_to_csv(path, file_to_write, dataFrame):
-    dataFrame.to_csv(f'{path}//{file_to_write}')
+def _dataframe_to_csv(path, file_name, dataFrame):
+    dataFrame.to_csv(f'{path}/{file_name}')
 
 
 class FileManipulation:
@@ -156,3 +156,7 @@ class FileManipulation:
 
     def download_pdf(self, pdf_name, pdf_url):
         urllib.request.urlretrieve(pdf_url, f'{self.base_path}/{pdf_name}.pdf')
+        
+    def dataframe_to_csv(self, file_name, dataframe):
+        path = f'{self.base_path}/{file_name}'
+        _dataframe_to_csv(path, dataframe)
