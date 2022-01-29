@@ -1,14 +1,10 @@
 import json
 import os
-import urllib.request
 import requests
-import pandas as pd
 from datetime import date
 from datetime import datetime as dt
 from pickle import load as load_pickle_file
-
-
-
+import urllib.request
 """
 python library to facilitate the manipulation of writing to the disk.
 """
@@ -34,26 +30,14 @@ def read_json(file_to_read):
     return json.load(file_to_read)
 
 
-def read_txt(file_to_read, separator):
-    return file_to_read.read().split(separator)
-
-
-def read_html(file_to_read):
-    return file_to_read.read()
-
-
-def read_pickle(file_to_read):
-    return load_pickle_file(file_to_read)
-
-
-def write_json(path, file_to_write, content, root_array_key):
+def write_json(path, file_to_write, content):
     if file_is_empty(path):
         data = [content]
     else:
         data = read_json(file_to_write)
         data.append(content)
-    # with open(path, 'w', encoding='utf8') as file_to_write:
-    json.dump(data, file_to_write, indent=4, default=json_serial)
+    with open(path, 'w', encoding='utf8') as file_to_write:
+        json.dump(data, file_to_write, indent=4, default=json_serial)
 
 
 def write_json1(path, file_to_write, content, root_array_key):
@@ -75,19 +59,31 @@ def write_json1(path, file_to_write, content, root_array_key):
             data[root_array_key] = [content]
     with open(path, 'w', encoding='utf8') as file_to_write:
         json.dump(data, file_to_write, indent=4, default=json_serial)
-        
+
+
+def read_txt(file_to_read, separator):
+    return file_to_read.read().split(separator)
+
+
+def read_html(file_to_read):
+    return file_to_read.read()
+
 
 def write_txt(file_to_write, content):
     print('txt')
     file_to_write.write(str(content))
 
 
+def read_pickle(file_to_read):
+    return load_pickle_file(file_to_read)
+
+
 def write_pickle(file_to_write):
     print('t')
 
 
-def _dataframe_to_csv(path, file_name, dataFrame):
-    dataFrame.to_csv(f'{path}/{file_name}')
+def _dataframe_to_csv(path, dataFrame):
+    dataFrame.to_csv(path)
 
 
 class FileManipulation:
@@ -116,16 +112,16 @@ class FileManipulation:
                     output: {"personal_info": [{"name": "ash","age": 26,"car": null}]}
         :return:
         """
-        path = f'{self.base_path}/{file_name}.{file_type}'
+        path = os.path.join(self.base_path, f'{file_name}.{file_type}')
         with open(path, 'a+', encoding='utf8') as file_to_write:
             if 'json' in file_type:
-                write_json(path, file_to_write, content, root_array_key)
+                write_json(path, file_to_write, content)
             else:
                 write_txt(file_to_write, content)
         print(f'You can find the file in {path}')
 
     def read_file(self, file_name, file_type, separator='\n'):
-        path = f'{self.base_path}/{file_name}.{file_type}'
+        path = os.path.join(self.base_path, f'{file_name}.{file_type}')
         """
         a function to read a file and return it's content
         :param file_name: the name of your file
@@ -151,12 +147,15 @@ class FileManipulation:
     def download_image(self, image_name, image_url):
         image_data = requests.get(image_url).content
         image_extension = image_url.split('.')[-1]
-        with open(f'{self.base_path}/{image_name}.{image_extension}', 'wb') as handler:
+        image_path = os.path.join(
+            self.base_path, f'{image_name}.{image_extension}')
+        with open(image_path, 'wb') as handler:
             handler.write(image_data)
 
     def download_pdf(self, pdf_name, pdf_url):
-        urllib.request.urlretrieve(pdf_url, f'{self.base_path}/{pdf_name}.pdf')
-        
+        pdf_path = os.path.join(self.base_path, f'{pdf_name}.pdf')
+        urllib.request.urlretrieve(pdf_url, pdf_path)
+
     def dataframe_to_csv(self, file_name, dataframe):
         path = f'{self.base_path}/{file_name}'
         _dataframe_to_csv(path, dataframe)
