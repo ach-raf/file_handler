@@ -82,23 +82,14 @@ def write_pickle(file_to_write):
     print('t')
 
 
-def _dataframe_to_csv(path, dataFrame):
-    dataFrame.to_csv(path)
-
-
 class FileManipulation:
-    def __init__(self, base_path='.'):
+    def __init__(self):
         """
         :param base_path: the root folder where you wanna put your file (if it doesn't exist it's automatically created)
             leave empty for root
         """
-        # Constructing the file path from the arguments
-        self.base_path = base_path
-        # If the root folder doesn't exist, it's automatically created
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
 
-    def write_to_disk(self, file_name, file_type, content, root_array_key='default_root'):
+    def write_to_disk(self, file_path, content, root_array_key='default_root'):
         """
         a function that write a file to the disk
         :param file_name: the name of your file
@@ -112,16 +103,21 @@ class FileManipulation:
                     output: {"personal_info": [{"name": "ash","age": 26,"car": null}]}
         :return:
         """
-        path = os.path.join(self.base_path, f'{file_name}.{file_type}')
-        with open(path, 'a+', encoding='utf8') as file_to_write:
-            if 'json' in file_type:
-                write_json(path, file_to_write, content)
-            else:
-                write_txt(file_to_write, content)
-        print(f'You can find the file in {path}')
+        # get the extension from file name without the dot
+        extension = os.path.splitext(file_path)[1][1:]
 
-    def read_file(self, file_name, file_type, separator='\n'):
-        path = os.path.join(self.base_path, f'{file_name}.{file_type}')
+        if not os.path.isfile(file_path):
+            print(f'You can find the file in {file_path}')
+
+        with open(file_path, 'a+', encoding='utf8') as file_to_write:
+            match extension:
+                case 'json':
+                    write_json(file_path, file_to_write, content)
+                case 'txt':
+                    write_txt(file_to_write, content)
+
+    def read_file(self, file_path, separator='\n'):
+        extension = os.path.splitext(file_path)[1][1:]
         """
         a function to read a file and return it's content
         :param file_name: the name of your file
@@ -129,33 +125,29 @@ class FileManipulation:
         :param separator: the separator to split the file to an array
         :return: an array of data from the file
         """
-        if not file_is_empty(path):
-            with open(path, 'r', encoding='utf8') as file_to_read:
-                if 'json' in file_type:
-                    data = read_json(file_to_read)
-                elif 'txt' in file_type:
-                    data = read_txt(file_to_read, separator)
-                elif 'html' in file_type:
-                    data = read_html(file_to_read)
-                elif 'pkl' in file_type:
-                    data = read_pickle(file_to_read)
+        if not file_is_empty(file_path):
+            with open(file_path, 'r', encoding='utf8') as file_to_read:
+                match extension:
+                    case 'json':
+                        data = read_json(file_to_read)
+                    case 'txt':
+                        data = read_txt(file_to_read, separator)
+                    case 'html':
+                        data = read_html(file_to_read)
+                    case 'pkl':
+                        data = read_pickle(file_to_read)
             return data
         else:
             print('No data to read')
             return False
 
-    def download_image(self, image_name, image_url):
+    def download_image(self, image_path, image_url):
         image_data = requests.get(image_url).content
-        image_extension = image_url.split('.')[-1]
-        image_path = os.path.join(
-            self.base_path, f'{image_name}.{image_extension}')
         with open(image_path, 'wb') as handler:
             handler.write(image_data)
 
-    def download_pdf(self, pdf_name, pdf_url):
-        pdf_path = os.path.join(self.base_path, f'{pdf_name}.pdf')
+    def download_pdf(self, pdf_path, pdf_url):
         urllib.request.urlretrieve(pdf_url, pdf_path)
 
-    def dataframe_to_csv(self, file_name, dataframe):
-        path = f'{self.base_path}/{file_name}'
-        _dataframe_to_csv(path, dataframe)
+    def dataframe_to_csv(self, file_path, dataframe):
+        dataframe.to_csv(file_path)
